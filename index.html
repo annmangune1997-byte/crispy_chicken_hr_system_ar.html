@@ -1,202 +1,875 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Crispy Chicken HR System</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crispy Chicken - HR Master System</title>
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --cc-red: #E4002B;
+            --cc-red-dark: #b00022;
+            --cc-black: #1a1a1a;
+            --cc-dark-gray: #333333;
+            --cc-white: #ffffff;
+            --cc-gray: #f4f6f9;
+            --cc-border: #e0e0e0;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --radius: 8px;
+        }
 
-<style>
-body{margin:0;font-family:Tahoma,Arial;background:#f4f6f8}
-.header{
-background:#b30000;color:#fff;padding:12px 20px;
-display:flex;justify-content:space-between;align-items:center
-}
-.header img{height:45px;background:#fff;padding:5px;border-radius:8px}
-.layout{display:flex}
-.sidebar{
-width:230px;background:#fff;min-height:100vh;
-box-shadow:-2px 0 5px rgba(0,0,0,.1)
-}
-.sidebar a{
-display:block;padding:12px;color:#333;text-decoration:none
-}
-.sidebar a:hover,.active{background:#b30000;color:#fff}
-.main{flex:1;padding:20px}
-.section{
-background:#fff;padding:15px;margin-bottom:15px;
-border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)
-}
-h3{margin-top:0;color:#b30000}
-input,select{width:100%;padding:6px;margin:4px 0}
-button{
-background:#b30000;color:#fff;border:none;
-padding:7px 14px;border-radius:6px;cursor:pointer
-}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border:1px solid #ddd;padding:7px;text-align:center}
-th{background:#eee}
-.progress{height:18px;background:#ddd;border-radius:10px;overflow:hidden}
-.bar{height:100%;background:green;width:0%}
-.alert{color:red;font-weight:bold}
-.card{
-display:inline-block;background:#eee;padding:10px;
-border-radius:8px;margin:5px;min-width:150px
-}
-.hide{display:none}
-</style>
+        * { box-sizing: border-box; outline: none; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--cc-gray);
+            margin: 0;
+            padding: 0;
+            color: var(--cc-dark-gray);
+        }
+
+        /* --- HEADER --- */
+        header {
+            background-color: var(--cc-black);
+            color: var(--cc-white);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid var(--cc-red);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chef-icon {
+            font-size: 28px;
+            background: var(--cc-red);
+            color: white;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 2px rgba(255,255,255,0.2);
+        }
+
+        .app-title h1 { margin: 0; font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+        .app-title span { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- CONTROLS TOOLBAR --- */
+        .controls {
+            padding: 15px 24px;
+            background: white;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            border-bottom: 1px solid var(--cc-border);
+            flex-wrap: wrap;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .search-wrapper {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        
+        .search-wrapper input {
+            width: 100%;
+            padding: 10px 10px 10px 35px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+        .search-wrapper input:focus { border-color: var(--cc-red); box-shadow: 0 0 0 3px rgba(228, 0, 43, 0.1); }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        button:active { transform: scale(0.98); }
+
+        .btn-branch { background-color: #444; }
+        .btn-branch:hover { background-color: #222; }
+
+        .btn-export { background-color: #28a745; }
+        .btn-export:hover { background-color: #218838; }
+
+        .btn-email { background-color: #007bff; }
+        .btn-email:hover { background-color: #0056b3; }
+
+        .btn-add { background-color: var(--cc-red); }
+        .btn-add:hover { background-color: var(--cc-red-dark); box-shadow: 0 4px 8px rgba(228, 0, 43, 0.3); }
+
+        .btn-reset { background-color: transparent; border: 1px solid #ccc; color: #666; padding: 5px 10px; font-size: 11px; }
+        .btn-reset:hover { border-color: red; color: red; background: #fff0f0; }
+
+        /* --- DASHBOARD STATS --- */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px 24px 0 24px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-top: 4px solid transparent;
+        }
+
+        .stat-card.total { border-color: #666; }
+        .stat-card.ready { border-color: #28a745; }
+        .stat-card.pending { border-color: #ffc107; }
+
+        .stat-number { font-size: 32px; font-weight: 800; color: var(--cc-black); margin-bottom: 4px; }
+        .stat-label { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* --- DATA TABLE --- */
+        .table-container {
+            margin: 20px 24px 24px 24px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--cc-border);
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            max-height: calc(100vh - 320px); /* Scroll within viewport */
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1400px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: #444;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 2px solid var(--cc-border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+            color: #333;
+            vertical-align: middle;
+        }
+
+        tr:hover { background-color: #fcfcfc; }
+
+        /* Badges & Checks */
+        .check-yes { color: #28a745; font-weight: bold; }
+        .check-no { color: #dc3545; }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+            text-align: center;
+            min-width: 80px;
+        }
+        .badge-ready { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .badge-pending { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+
+        /* Photo Progress Bar */
+        .progress-bg {
+            background-color: #eee;
+            border-radius: 10px;
+            width: 60px;
+            height: 8px;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 6px;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--cc-red);
+        }
+
+        /* Action Buttons */
+        .action-btn {
+            background: none; border: none; cursor: pointer; padding: 6px; 
+            border-radius: 4px; transition: 0.2s;
+        }
+        .btn-edit { color: #007bff; background: #e8f0fe; }
+        .btn-edit:hover { background: #007bff; color: white; }
+        .btn-del { color: #dc3545; background: #fde8e8; }
+        .btn-del:hover { background: #dc3545; color: white; }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.open { display: flex; opacity: 1; }
+
+        .modal-content {
+            background: white;
+            padding: 0; /* Padding handled inside children */
+            border-radius: 12px;
+            width: 90%;
+            max-width: 750px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+        }
+        .modal-overlay.open .modal-content { transform: translateY(0); }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fcfcfc;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-header h3 { margin: 0; color: var(--cc-black); }
+        
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #fcfcfc;
+            border-radius: 0 0 12px 12px;
+        }
+
+        /* Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        
+        .form-group { margin-bottom: 5px; }
+        .form-group label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 12px; color: #555; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;
+            font-size: 14px; background: #fff;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--cc-red); }
+
+        .divider { grid-column: span 2; border-top: 1px solid #eee; margin: 10px 0; padding-top: 10px; color: var(--cc-red); font-weight: bold; font-size: 13px; }
+
+        .btn-cancel { background-color: #999; }
+        .btn-cancel:hover { background-color: #777; }
+
+        /* Branch List Style */
+        .branch-list-ul {
+            list-style: none; padding: 0; margin: 10px 0 20px 0;
+            max-height: 200px; overflow-y: auto;
+            border: 1px solid #eee; border-radius: 6px;
+        }
+        .branch-list-ul li {
+            padding: 10px 15px; border-bottom: 1px solid #f5f5f5;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .branch-list-ul li:last-child { border-bottom: none; }
+
+        /* --- TOAST --- */
+        .toast {
+            visibility: hidden; min-width: 280px; background-color: #333; color: #fff;
+            text-align: center; border-radius: 50px; padding: 14px 24px;
+            position: fixed; z-index: 2000; bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            font-size: 14px; font-weight: 500;
+            opacity: 0; transition: all 0.3s;
+        }
+        .toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* Utilities */
+        .text-small { font-size: 11px; color: #777; }
+        .hidden { display: none; }
+    </style>
 </head>
-
 <body>
 
-<!-- HEADER -->
-<div class="header">
-<div>
-<img src="logo.png">
-<strong> Crispy Chicken – HR System </strong>
-</div>
-<div>
-<i class="fa fa-user"></i> HR Admin
-</div>
-</div>
+    <!-- Header -->
+    <header>
+        <div class="logo-area">
+            <div class="chef-icon">👨‍🍳</div>
+            <div class="app-title">
+                <h1>CRISPY CHICKEN HR</h1>
+                <span>Staff Tracker & TipCenter Coordination</span>
+            </div>
+        </div>
+        <button class="btn-reset" onclick="resetData()">⚠ Reset Data</button>
+    </header>
 
-<div class="layout">
+    <!-- Controls -->
+    <div class="controls">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search ID, Name, or Branch..." onkeyup="filterData()">
+        </div>
+        
+        <div style="flex:1"></div> <!-- Spacer -->
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-<a class="active" onclick="show('dashboard')"><i class="fa fa-chart-line"></i> Dashboard</a>
-<a onclick="show('employees')"><i class="fa fa-users"></i> Employees</a>
-<a onclick="show('profile')"><i class="fa fa-id-card"></i> Employee Profile</a>
-<a onclick="show('onboarding')"><i class="fa fa-clipboard-check"></i> On-Boarding</a>
-</div>
+        <button class="btn-branch" onclick="openBranchModal()">🏢 Manage Branches</button>
+        <button class="btn-export" onclick="exportToCSV()">📥 Excel/CSV</button>
+        <button class="btn-email" onclick="sendReportEmail()">📧 Send Report</button>
+        <button class="btn-add" onclick="openAddModal()">+ New Staff</button>
+    </div>
 
-<!-- MAIN -->
-<div class="main">
+    <!-- Stats -->
+    <div class="dashboard">
+        <div class="stat-card total">
+            <div class="stat-number" id="totalCount">0</div>
+            <div class="stat-label">Total Staff</div>
+        </div>
+        <div class="stat-card ready">
+            <div class="stat-number" id="activeCount" style="color: #28a745;">0</div>
+            <div class="stat-label">Ready for Handover</div>
+        </div>
+        <div class="stat-card pending">
+            <div class="stat-number" id="pendingCount" style="color: #ffc107;">0</div>
+            <div class="stat-label">Pending Actions</div>
+        </div>
+    </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="section">
-<h3>📊 Dashboard</h3>
-<div class="card">👥 إجمالي الموظفين: <span id="totalEmp">0</span></div>
-<div class="card">⏳ On-Boarding ناقص: <span id="pending">0</span></div>
-<div class="card alert" id="visaAlert"></div>
-</div>
+    <!-- Main Table -->
+    <div class="table-container">
+        <div class="table-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th style="width: 150px;">Name</th>
+                        <th style="width: 60px;">Pass</th>
+                        <th style="width: 100px;">Photos</th>
+                        <th style="width: 60px;">CV</th>
+                        <th style="width: 100px;">Medical</th>
+                        <th style="width: 80px;">Offer</th>
+                        <th style="width: 80px;">TipCntr</th>
+                        <th style="width: 100px;">Joining</th>
+                        <th style="width: 80px;">Type</th>
+                        <th>Branch</th>
+                        <th style="width: 130px;">Status</th>
+                        <th style="width: 80px; text-align: center;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTableBody">
+                    <!-- JS Data -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-<!-- EMPLOYEES -->
-<div id="employees" class="section hide">
-<h3>👥 إضافة موظف</h3>
-<input id="name" placeholder="اسم الموظف">
-<input id="job" placeholder="الوظيفة">
-<input id="branch" placeholder="الفرع">
-<label>انتهاء الإقامة</label>
-<input type="date" id="visa">
-<button onclick="addEmployee()">حفظ</button>
+    <!-- 1. BRANCH MODAL -->
+    <div id="branchModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Manage Branches</h3>
+                <button class="action-btn" onclick="closeModal('branchModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="newBranchName" placeholder="New branch name...">
+                        <button class="btn-add" onclick="addNewBranch()">Add</button>
+                    </div>
+                </div>
+                <ul id="branchListDisplay" class="branch-list-ul"></ul>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('branchModal')">Close</button>
+            </div>
+        </div>
+    </div>
 
-<h3 style="margin-top:20px">قائمة الموظفين</h3>
-<select id="empList" onchange="loadEmployee()"></select>
-</div>
+    <!-- 2. ADD/EDIT STAFF MODAL -->
+    <div id="staffModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Staff Member</h3>
+                <button class="action-btn" onclick="closeModal('staffModal')">✕</button>
+            </div>
+            <div class="modal-body">
+                <form id="staffForm" onsubmit="event.preventDefault(); saveStaff();">
+                    <input type="hidden" id="editId">
+                    
+                    <div class="form-grid">
+                        <div class="divider">Basic Information</div>
+                        
+                        <div class="form-group">
+                            <label>Employee ID</label>
+                            <input type="text" id="inpId" placeholder="Ex: STF100" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" id="inpName" placeholder="Ex: Ahmed Ali" required>
+                        </div>
 
-<!-- PROFILE -->
-<div id="profile" class="section hide">
-<h3>👤 ملف الموظف</h3>
-<p><b>الاسم:</b> <span id="pName"></span></p>
-<p><b>الوظيفة:</b> <span id="pJob"></span></p>
-<p><b>الفرع:</b> <span id="pBranch"></span></p>
-<p><b>انتهاء الإقامة:</b> <span id="pVisa"></span></p>
-</div>
+                        <div class="divider">Assignment</div>
+                        
+                        <div class="form-group">
+                            <label>Assignment Type</label>
+                            <select id="inpType">
+                                <option value="On-site">فيزي (On-site)</option>
+                                <option value="Visiting">زيارة (Visiting)</option>
+                                <option value="On Loan">إعارة (On Loan)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Branch</label>
+                            <select id="inpBranch" required></select>
+                        </div>
 
-<!-- ONBOARDING -->
-<div id="onboarding" class="section hide">
-<h3>📋 On-Boarding Checklist</h3>
-<table>
-<tr><th>الإجراء</th><th>✔</th></tr>
-<tr><td>استلام الجواز</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>عرض العمل</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>توقيع العقد</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>الفحص الطبي</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>الإقامة</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>تدريب سلامة الغذاء</td><td><input type="checkbox" class="chk"></td></tr>
-</table>
+                        <div class="divider">Documents Checklist</div>
+                        
+                        <div class="form-group">
+                            <label>Passport Received?</label>
+                            <select id="inpPassport">
+                                <option value="false">No ❌</option>
+                                <option value="true">Yes ✅</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Photos (Max 5)</label>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <input type="number" id="inpPhotos" min="0" max="5" value="0" style="width:80px;">
+                                <span class="text-small">Required: 5</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>CV Received?</label>
+                            <select id="inpCV">
+                                <option value="false">No ❌</option>
+                                <option value="true">Yes ✅</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Medical Date</label>
+                            <input type="date" id="inpMedical">
+                        </div>
 
-<div class="progress"><div class="bar" id="bar"></div></div>
-<p>نسبة الإنجاز: <span id="percent">0%</span></p>
-</div>
+                        <div class="divider">Final Confirmation</div>
+                        
+                        <div class="form-group">
+                            <label>Offer Confirmed?</label>
+                            <select id="inpConfirmed">
+                                <option value="false">No ❌</option>
+                                <option value="true">Yes ✅</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>TipCenter Sent?</label>
+                            <select id="inpTipCenter">
+                                <option value="false">No ❌</option>
+                                <option value="true">Yes ✅</option>
+                            </select>
+                        </div>
 
-</div>
-</div>
+                        <div class="divider">Schedule & Notes</div>
+                        
+                        <div class="form-group">
+                            <label>Joining Date</label>
+                            <input type="date" id="inpJoiningDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <input type="text" id="inpNotes" placeholder="Optional notes...">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeModal('staffModal')">Cancel</button>
+                <button class="btn-add" onclick="saveStaff()">💾 Save Staff</button>
+            </div>
+        </div>
+    </div>
 
-<script>
-let employees = JSON.parse(localStorage.getItem("emps") || "[]");
-let current = 0;
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">Operation Successful</div>
 
-function show(id){
-["dashboard","employees","profile","onboarding"].forEach(x=>{
-document.getElementById(x).classList.add("hide");
-});
-document.getElementById(id).classList.remove("hide");
-}
+    <script>
+        // --- CONFIG & STATE ---
+        const STORAGE_KEY_EMP = 'cc_employees_v2';
+        const STORAGE_KEY_BR = 'cc_branches_v2';
+        
+        let employees = [];
+        let branches = ["CC Hamdan St", "CC Khaldia", "CC Muroor", "CC Shabiya 11", "CC Head Office"];
 
-function save(){localStorage.setItem("emps",JSON.stringify(employees));}
+        // --- INIT ---
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+        });
 
-function addEmployee(){
-employees.push({
-name:name.value,job:job.value,branch:branch.value,
-visa:visa.value,checks:[]
-});
-save();loadList();alert("تمت الإضافة");
-}
+        function loadData() {
+            const storedEmp = localStorage.getItem(STORAGE_KEY_EMP);
+            const storedBr = localStorage.getItem(STORAGE_KEY_BR);
 
-function loadList(){
-empList.innerHTML="";
-employees.forEach((e,i)=>{
-let o=document.createElement("option");
-o.value=i;o.textContent=e.name;
-empList.appendChild(o);
-});
-totalEmp.textContent=employees.length;
-loadEmployee();
-}
+            if (storedEmp) {
+                employees = JSON.parse(storedEmp);
+            } else {
+                // Initial Seed Data
+                employees = [
+                    { id: "STF001", name: "Ali Hassan", passport: true, photos: 5, cv: true, medicalDate: "2023-10-01", confirmedOffer: true, tipCenterSent: true, joiningDate: "2023-11-01", type: "On-site", branch: "CC Hamdan St", notes: "" },
+                    { id: "STF002", name: "John Smith", passport: true, photos: 4, cv: true, medicalDate: "", confirmedOffer: false, tipCenterSent: false, joiningDate: "", type: "Visiting", branch: "CC Khaldia", notes: "Missing photo" },
+                ];
+            }
 
-function loadEmployee(){
-current=empList.value||0;
-let e=employees[current];
-if(!e)return;
-pName.textContent=e.name;
-pJob.textContent=e.job;
-pBranch.textContent=e.branch;
-pVisa.textContent=e.visa;
-document.querySelectorAll(".chk").forEach((c,i)=>{
-c.checked=e.checks[i]||false;
-});
-calc();
-checkVisa();
-}
+            if (storedBr) branches = JSON.parse(storedBr);
 
-document.querySelectorAll(".chk").forEach((c,i)=>{
-c.onchange=()=>{
-employees[current].checks[i]=c.checked;
-save();calc();
-}
-});
+            saveData(); // Save defaults if needed
+            updateUI();
+        }
 
-function calc(){
-let c=document.querySelectorAll(".chk");
-let d=[...c].filter(x=>x.checked).length;
-let p=Math.round(d/c.length*100);
-bar.style.width=p+"%";
-percent.textContent=p+"%";
-pending.textContent=employees.filter(e=>(e.checks||[]).length<6).length;
-}
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY_EMP, JSON.stringify(employees));
+            localStorage.setItem(STORAGE_KEY_BR, JSON.stringify(branches));
+        }
 
-function checkVisa(){
-visaAlert.textContent="";
-let e=employees[current];
-if(e && e.visa){
-let days=(new Date(e.visa)-new Date())/86400000;
-if(days<30) visaAlert.textContent="⚠ تنبيه: إقامة قريبة الانتهاء";
-}
-}
+        function resetData() {
+            if(confirm("Are you sure? This will delete all data and reset to defaults.")) {
+                localStorage.removeItem(STORAGE_KEY_EMP);
+                localStorage.removeItem(STORAGE_KEY_BR);
+                location.reload();
+            }
+        }
 
-loadList();
-</script>
+        // --- CORE LOGIC ---
 
+        function getEmployeeStatus(emp) {
+            // Logic: MUST have all items to be "Ready"
+            const hasDocs = emp.passport && emp.cv;
+            const hasPhotos = emp.photos >= 5;
+            const hasMedical = !!emp.medicalDate;
+            const hasOffer = emp.confirmedOffer;
+            const hasTip = emp.tipCenterSent;
+            const hasDate = !!emp.joiningDate;
+
+            if (hasDocs && hasPhotos && hasMedical && hasOffer && hasTip && hasDate) {
+                return { label: "Ready for Handover", class: "badge-ready", isReady: true };
+            }
+            return { label: "Pending", class: "badge-pending", isReady: false };
+        }
+
+        function updateUI() {
+            renderBranches();
+            renderTable(employees);
+        }
+
+        function renderBranches() {
+            // Populate Dropdown in Modal
+            const select = document.getElementById('inpBranch');
+            select.innerHTML = '<option value="">-- Select Branch --</option>';
+            branches.sort().forEach(b => {
+                select.innerHTML += `<option value="${b}">${b}</option>`;
+            });
+
+            // Populate List in Branch Modal
+            const list = document.getElementById('branchListDisplay');
+            list.innerHTML = '';
+            branches.sort().forEach(b => {
+                list.innerHTML += `
+                    <li>
+                        <span>${b}</span> 
+                        <button class="action-btn btn-del" onclick="deleteBranch('${b}')">Delete</button>
+                    </li>`;
+            });
+        }
+
+        function renderTable(data) {
+            const tbody = document.getElementById('employeeTableBody');
+            tbody.innerHTML = ''; 
+
+            let active = 0;
+            let pending = 0;
+
+            data.forEach(emp => {
+                const status = getEmployeeStatus(emp);
+                if(status.isReady) active++; else pending++;
+
+                // Photo Bar Calculation
+                const photoPct = Math.min((emp.photos / 5) * 100, 100);
+                const photoColor = emp.photos >= 5 ? '#28a745' : '#E4002B';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${emp.id}</strong></td>
+                    <td>${emp.name}</td>
+                    <td>${emp.passport ? '<span class="check-yes">✅</span>' : '<span class="check-no">❌</span>'}</td>
+                    <td>
+                        <div class="progress-bg">
+                            <div class="progress-fill" style="width: ${photoPct}%; background-color: ${photoColor}"></div>
+                        </div>
+                        <span class="text-small">${emp.photos}/5</span>
+                    </td>
+                    <td>${emp.cv ? '<span class="check-yes">✅</span>' : '<span class="check-no">❌</span>'}</td>
+                    <td>${emp.medicalDate ? '<span style="font-size:11px; color:#28a745">' + emp.medicalDate + '</span>' : '<span class="text-small">...</span>'}</td>
+                    <td>${emp.confirmedOffer ? '<span class="check-yes">✅</span>' : '<span class="check-no">❌</span>'}</td>
+                    <td>${emp.tipCenterSent ? '<span class="check-yes">Sent</span>' : '<span class="text-small">--</span>'}</td>
+                    <td>${emp.joiningDate || '<span class="text-small">--</span>'}</td>
+                    <td>${emp.type}</td>
+                    <td>${emp.branch}</td>
+                    <td><span class="badge ${status.class}">${status.label}</span></td>
+                    <td style="text-align: center;">
+                        <button class="action-btn btn-edit" onclick="editEmployee('${emp.id}')" title="Edit">✎</button>
+                        <button class="action-btn btn-del" onclick="deleteEmployee('${emp.id}')" title="Delete">🗑</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('totalCount').innerText = data.length;
+            document.getElementById('activeCount').innerText = active;
+            document.getElementById('pendingCount').innerText = pending;
+        }
+
+        // --- FILTERING ---
+        function filterData() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = employees.filter(emp => {
+                return (emp.id && emp.id.toLowerCase().includes(query)) || 
+                       (emp.name && emp.name.toLowerCase().includes(query)) || 
+                       (emp.branch && emp.branch.toLowerCase().includes(query));
+            });
+            renderTable(filtered);
+        }
+
+        // --- BRANCH ACTIONS ---
+        function addNewBranch() {
+            const input = document.getElementById('newBranchName');
+            const name = input.value.trim();
+            if(name && !branches.includes(name)) {
+                branches.push(name);
+                saveData();
+                renderBranches();
+                input.value = '';
+                showToast("Branch added");
+            }
+        }
+        function deleteBranch(name) {
+            if(confirm(`Delete branch "${name}"? Staff assigned to this branch will keep the name.`)) {
+                branches = branches.filter(b => b !== name);
+                saveData();
+                renderBranches();
+            }
+        }
+
+        // --- STAFF MODAL ACTIONS (ADD & EDIT) ---
+        function openAddModal() {
+            document.getElementById('modalTitle').innerText = "Add New Staff Member";
+            document.getElementById('editId').value = ""; // Empty ID = Add Mode
+            
+            // Reset Form
+            document.getElementById('staffForm').reset();
+            document.getElementById('inpPhotos').value = 0;
+            
+            openModal('staffModal');
+        }
+
+        function editEmployee(id) {
+            const emp = employees.find(e => e.id === id);
+            if(!emp) return;
+
+            document.getElementById('modalTitle').innerText = `Edit Staff: ${emp.name}`;
+            document.getElementById('editId').value = emp.id; // ID = Edit Mode
+
+            // Populate Fields
+            document.getElementById('inpId').value = emp.id;
+            document.getElementById('inpName').value = emp.name;
+            document.getElementById('inpType').value = emp.type;
+            document.getElementById('inpBranch').value = emp.branch;
+            document.getElementById('inpPassport').value = emp.passport ? "true" : "false";
+            document.getElementById('inpPhotos').value = emp.photos;
+            document.getElementById('inpCV').value = emp.cv ? "true" : "false";
+            document.getElementById('inpMedical').value = emp.medicalDate;
+            document.getElementById('inpConfirmed').value = emp.confirmedOffer ? "true" : "false";
+            document.getElementById('inpTipCenter').value = emp.tipCenterSent ? "true" : "false";
+            document.getElementById('inpJoiningDate').value = emp.joiningDate;
+            document.getElementById('inpNotes').value = emp.notes || "";
+
+            openModal('staffModal');
+        }
+
+        function saveStaff() {
+            const editId = document.getElementById('editId').value;
+            const id = document.getElementById('inpId').value.trim();
+            const name = document.getElementById('inpName').value.trim();
+
+            if (!id || !name) { alert("ID and Name are required."); return; }
+
+            const formData = {
+                id,
+                name,
+                type: document.getElementById('inpType').value,
+                branch: document.getElementById('inpBranch').value,
+                passport: document.getElementById('inpPassport').value === 'true',
+                photos: parseInt(document.getElementById('inpPhotos').value) || 0,
+                cv: document.getElementById('inpCV').value === 'true',
+                medicalDate: document.getElementById('inpMedical').value,
+                confirmedOffer: document.getElementById('inpConfirmed').value === 'true',
+                tipCenterSent: document.getElementById('inpTipCenter').value === 'true',
+                joiningDate: document.getElementById('inpJoiningDate').value,
+                notes: document.getElementById('inpNotes').value
+            };
+
+            if (editId) {
+                // Update Existing
+                const index = employees.findIndex(e => e.id === editId);
+                if (index !== -1) {
+                    employees[index] = formData;
+                    showToast("Staff Updated");
+                }
+            } else {
+                // Create New
+                if (employees.some(e => e.id === id)) {
+                    alert("Error: An employee with this ID already exists.");
+                    return;
+                }
+                employees.unshift(formData); // Add to top
+                showToast("Staff Added");
+            }
+
+            saveData();
+            filterData(); // Re-render with current filters
+            closeModal('staffModal');
+        }
+
+        function deleteEmployee(id) {
+            if(confirm("Are you sure you want to delete this staff member?")) {
+                employees = employees.filter(e => e.id !== id);
+                saveData();
+                filterData();
+                showToast("Deleted");
+            }
+        }
+
+        // --- UTILITIES ---
+        function openModal(id) {
+            const m = document.getElementById(id);
+            m.classList.add('open');
+        }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+        }
+        
+        function showToast(msg) {
+            const x = document.getElementById("toast");
+            x.innerText = msg;
+            x.className = "toast show";
+            setTimeout(() => { x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        function sendReportEmail() {
+            const total = employees.length;
+            const active = employees.filter(e => getEmployeeStatus(e).isReady).length;
+            const pending = total - active;
+
+            let body = `CRISPY CHICKEN HR Report\nDate: ${new Date().toLocaleDateString()}\n\nTotal Staff: ${total}\nReady for Handover: ${active}\nPending: ${pending}`;
+            
+            const mailtoLink = `mailto:mohammed.t@crispychicken.rest,kenawe@crispychicken.rest?subject=HR Report&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;
+            showToast("Opening Mail Client...");
+        }
+
+        function exportToCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // Header
+            csvContent += "ID,Name,Type,Branch,Passport,Photos,CV,Medical,Offer,TipCenter,JoiningDate,Status\n";
+
+            // Rows
+            employees.forEach(e => {
+                const status = getEmployeeStatus(e).label;
+                const row = [
+                    e.id, e.name, e.type, e.branch,
+                    e.passport ? "Yes" : "No", e.photos,
+                    e.cv ? "Yes" : "No", e.medicalDate,
+                    e.confirmedOffer ? "Yes" : "No", e.tipCenterSent ? "Yes" : "No",
+                    e.joiningDate, status
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "crispy_hR_report.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("Report Downloaded");
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('open');
+            }
+        }
+    </script>
 </body>
 </html>
