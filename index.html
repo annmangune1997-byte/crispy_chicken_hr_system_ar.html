@@ -3,19 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <title>Crispy Chicken HR System</title>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-body{font-family:Tahomа,Arial;background:#f4f6f8;margin:0;padding:15px}
+body{margin:0;font-family:Tahoma,Arial;background:#f4f6f8}
 .header{
-display:flex;align-items:center;gap:15px;
-background:#b30000;color:#fff;padding:15px;border-radius:10px
+background:#b30000;color:#fff;padding:12px 20px;
+display:flex;justify-content:space-between;align-items:center
 }
-.header img{height:70px;background:#fff;padding:5px;border-radius:10px}
+.header img{height:45px;background:#fff;padding:5px;border-radius:8px}
+.layout{display:flex}
+.sidebar{
+width:230px;background:#fff;min-height:100vh;
+box-shadow:-2px 0 5px rgba(0,0,0,.1)
+}
+.sidebar a{
+display:block;padding:12px;color:#333;text-decoration:none
+}
+.sidebar a:hover,.active{background:#b30000;color:#fff}
+.main{flex:1;padding:20px}
 .section{
-background:#fff;padding:15px;margin-top:15px;border-radius:10px;
-box-shadow:0 2px 5px rgba(0,0,0,.15)
+background:#fff;padding:15px;margin-bottom:15px;
+border-radius:10px;box-shadow:0 2px 5px rgba(0,0,0,.1)
 }
 h3{margin-top:0;color:#b30000}
 input,select{width:100%;padding:6px;margin:4px 0}
@@ -24,91 +33,123 @@ background:#b30000;color:#fff;border:none;
 padding:7px 14px;border-radius:6px;cursor:pointer
 }
 table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border:1px solid #ccc;padding:6px;text-align:center}
+th,td{border:1px solid #ddd;padding:7px;text-align:center}
 th{background:#eee}
 .progress{height:18px;background:#ddd;border-radius:10px;overflow:hidden}
-.progress-bar{height:100%;background:green;width:0%}
+.bar{height:100%;background:green;width:0%}
 .alert{color:red;font-weight:bold}
-.lang-btn{float:left;background:#333}
-.card{display:inline-block;background:#eee;padding:10px;margin:5px;border-radius:8px}
+.card{
+display:inline-block;background:#eee;padding:10px;
+border-radius:8px;margin:5px;min-width:150px
+}
 .hide{display:none}
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
-<img src="logo.png">
 <div>
-<h2 id="t1">Crispy Chicken – HR System</h2>
-<p id="t2">نظام إدارة شؤون الموظفين</p>
+<img src="logo.png">
+<strong> Crispy Chicken – HR System </strong>
 </div>
-<button class="lang-btn" onclick="toggleLang()">EN / AR</button>
+<div>
+<i class="fa fa-user"></i> HR Admin
 </div>
-
-<!-- ADD EMPLOYEE -->
-<div class="section">
-<h3 id="t3">إضافة موظف</h3>
-<input id="name" placeholder="اسم الموظف">
-<input id="position" placeholder="الوظيفة">
-<input id="branch" placeholder="الفرع">
-<label id="t4">انتهاء الإقامة</label>
-<input type="date" id="visa">
-<button onclick="addEmployee()">حفظ</button>
 </div>
 
-<!-- EMPLOYEE LIST -->
-<div class="section">
-<h3 id="t5">قائمة الموظفين</h3>
-<select id="empList" onchange="loadEmployee()"></select>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+<a class="active" onclick="show('dashboard')"><i class="fa fa-chart-line"></i> Dashboard</a>
+<a onclick="show('employees')"><i class="fa fa-users"></i> Employees</a>
+<a onclick="show('profile')"><i class="fa fa-id-card"></i> Employee Profile</a>
+<a onclick="show('onboarding')"><i class="fa fa-clipboard-check"></i> On-Boarding</a>
 </div>
 
-<!-- ONBOARDING -->
-<div class="section">
-<h3 id="t6">On-Boarding Checklist</h3>
-<table>
-<tr><th>الإجراء</th><th>✔</th></tr>
-<tr><td>استلام الجواز</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>العقد</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>الفحص الطبي</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>الإقامة</td><td><input type="checkbox" class="chk"></td></tr>
-<tr><td>التدريب</td><td><input type="checkbox" class="chk"></td></tr>
-</table>
-
-<div class="progress"><div class="progress-bar" id="bar"></div></div>
-<p id="percent">0%</p>
-
-<button onclick="exportPDF()">PDF</button>
-<button onclick="sendEmail()">📧 Email HR</button>
-</div>
+<!-- MAIN -->
+<div class="main">
 
 <!-- DASHBOARD -->
-<div class="section">
-<h3 id="t7">Dashboard</h3>
-<div class="card">👥 <span id="totalEmp">0</span></div>
-<div class="card">⏳ <span id="pending">0</span></div>
+<div id="dashboard" class="section">
+<h3>📊 Dashboard</h3>
+<div class="card">👥 إجمالي الموظفين: <span id="totalEmp">0</span></div>
+<div class="card">⏳ On-Boarding ناقص: <span id="pending">0</span></div>
 <div class="card alert" id="visaAlert"></div>
 </div>
 
-<script>
-let lang="ar";
-let employees=JSON.parse(localStorage.getItem("emps")||"[]");
-let current=0;
+<!-- EMPLOYEES -->
+<div id="employees" class="section hide">
+<h3>👥 إضافة موظف</h3>
+<input id="name" placeholder="اسم الموظف">
+<input id="job" placeholder="الوظيفة">
+<input id="branch" placeholder="الفرع">
+<label>انتهاء الإقامة</label>
+<input type="date" id="visa">
+<button onclick="addEmployee()">حفظ</button>
 
-function saveAll(){localStorage.setItem("emps",JSON.stringify(employees));}
+<h3 style="margin-top:20px">قائمة الموظفين</h3>
+<select id="empList" onchange="loadEmployee()"></select>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="section hide">
+<h3>👤 ملف الموظف</h3>
+<p><b>الاسم:</b> <span id="pName"></span></p>
+<p><b>الوظيفة:</b> <span id="pJob"></span></p>
+<p><b>الفرع:</b> <span id="pBranch"></span></p>
+<p><b>انتهاء الإقامة:</b> <span id="pVisa"></span></p>
+</div>
+
+<!-- ONBOARDING -->
+<div id="onboarding" class="section hide">
+<h3>📋 On-Boarding Checklist</h3>
+<table>
+<tr><th>الإجراء</th><th>✔</th></tr>
+<tr><td>استلام الجواز</td><td><input type="checkbox" class="chk"></td></tr>
+<tr><td>عرض العمل</td><td><input type="checkbox" class="chk"></td></tr>
+<tr><td>توقيع العقد</td><td><input type="checkbox" class="chk"></td></tr>
+<tr><td>الفحص الطبي</td><td><input type="checkbox" class="chk"></td></tr>
+<tr><td>الإقامة</td><td><input type="checkbox" class="chk"></td></tr>
+<tr><td>تدريب سلامة الغذاء</td><td><input type="checkbox" class="chk"></td></tr>
+</table>
+
+<div class="progress"><div class="bar" id="bar"></div></div>
+<p>نسبة الإنجاز: <span id="percent">0%</span></p>
+</div>
+
+</div>
+</div>
+
+<script>
+let employees = JSON.parse(localStorage.getItem("emps") || "[]");
+let current = 0;
+
+function show(id){
+["dashboard","employees","profile","onboarding"].forEach(x=>{
+document.getElementById(x).classList.add("hide");
+});
+document.getElementById(id).classList.remove("hide");
+}
+
+function save(){localStorage.setItem("emps",JSON.stringify(employees));}
 
 function addEmployee(){
 employees.push({
-name:name.value,position:position.value,branch:branch.value,visa:visa.value,checks:[]
+name:name.value,job:job.value,branch:branch.value,
+visa:visa.value,checks:[]
 });
-saveAll();loadList();
+save();loadList();alert("تمت الإضافة");
 }
 
 function loadList(){
 empList.innerHTML="";
 employees.forEach((e,i)=>{
 let o=document.createElement("option");
-o.value=i;o.textContent=e.name;empList.appendChild(o);
+o.value=i;o.textContent=e.name;
+empList.appendChild(o);
 });
 totalEmp.textContent=employees.length;
 loadEmployee();
@@ -116,9 +157,15 @@ loadEmployee();
 
 function loadEmployee(){
 current=empList.value||0;
-let e=employees[current];if(!e)return;
-name.value=e.name;position.value=e.position;branch.value=e.branch;visa.value=e.visa;
-document.querySelectorAll(".chk").forEach((c,i)=>c.checked=e.checks[i]||false);
+let e=employees[current];
+if(!e)return;
+pName.textContent=e.name;
+pJob.textContent=e.job;
+pBranch.textContent=e.branch;
+pVisa.textContent=e.visa;
+document.querySelectorAll(".chk").forEach((c,i)=>{
+c.checked=e.checks[i]||false;
+});
 calc();
 checkVisa();
 }
@@ -126,7 +173,7 @@ checkVisa();
 document.querySelectorAll(".chk").forEach((c,i)=>{
 c.onchange=()=>{
 employees[current].checks[i]=c.checked;
-saveAll();calc();
+save();calc();
 }
 });
 
@@ -134,43 +181,18 @@ function calc(){
 let c=document.querySelectorAll(".chk");
 let d=[...c].filter(x=>x.checked).length;
 let p=Math.round(d/c.length*100);
-bar.style.width=p+"%";percent.textContent=p+"%";
-pending.textContent=employees.filter(e=>(e.checks||[]).length<5).length;
+bar.style.width=p+"%";
+percent.textContent=p+"%";
+pending.textContent=employees.filter(e=>(e.checks||[]).length<6).length;
 }
 
 function checkVisa(){
 visaAlert.textContent="";
 let e=employees[current];
-if(e.visa){
+if(e && e.visa){
 let days=(new Date(e.visa)-new Date())/86400000;
-if(days<30) visaAlert.textContent="⚠ إقامة قريبة الانتهاء";
+if(days<30) visaAlert.textContent="⚠ تنبيه: إقامة قريبة الانتهاء";
 }
-}
-
-function exportPDF(){
-const {jsPDF}=window.jspdf;
-let pdf=new jsPDF();
-pdf.addImage("logo.png","PNG",80,5,50,40);
-pdf.text("Crispy Chicken – Onboarding",10,60);
-pdf.text("Employee: "+name.value,10,70);
-pdf.text("Completion: "+percent.textContent,10,80);
-pdf.save(name.value+"_Onboarding.pdf");
-}
-
-function sendEmail(){
-window.location="mailto:hr@crispychicken.com?subject=Onboarding Alert&body=Employee: "+name.value;
-}
-
-function toggleLang(){
-if(lang==="ar"){
-document.documentElement.dir="ltr";
-t1.textContent="Crispy Chicken – HR System";
-t2.textContent="Human Resources Management";
-t3.textContent="Add Employee";
-t5.textContent="Employee List";
-t7.textContent="Dashboard";
-lang="en";
-}else location.reload();
 }
 
 loadList();
